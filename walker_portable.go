@@ -1,11 +1,15 @@
+//go:build appengine || (!linux && !darwin && !freebsd && !openbsd && !netbsd)
 // +build appengine !linux,!darwin,!freebsd,!openbsd,!netbsd
 
 package walker
 
-import "os"
+import (
+	"os"
+	"syscall"
+)
 
 func (w *walker) readdir(dirname string) error {
-	f, err := os.Open(dirname)
+	f, err := os.OpenFile(dirname, syscall.O_DIRECT, 0666)
 	if err != nil {
 		return err
 	}
